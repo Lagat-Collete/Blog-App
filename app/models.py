@@ -1,4 +1,6 @@
 from email.policy import default
+from enum import unique
+from operator import index
 from turtle import title
 
 from requests import post
@@ -31,6 +33,9 @@ class User(UserMixin,db.Model):
     profile_pic_path = db.Column(db.String(),default ='default.png')
     password_hash = db.Column(db.String(255),nullable = False)
     photos = db.relationship('PhotoProfile',backref = 'user',lazy = "dynamic")
+    post = db.relationship('Post', backref='user', lazy='dynamic')
+    comment = db.relationship('Comment', backref='user', lazy='dynamic')
+
     @property
     def password(self):
         raise AttributeError('You cannnot read the password attribute')
@@ -43,7 +48,7 @@ class User(UserMixin,db.Model):
     def verify_password(self,password):
         return check_password_hash(self.password_hash,password)
         
-    def save_user(self):
+    def save(self):
         db.session.add(self)
         db.session.commit()
 
@@ -55,13 +60,42 @@ class User(UserMixin,db.Model):
         return f'User {self.username}'
 
 
+class Post(db.Model):
+    __tablename__='posts'
+
+    id = db.Column(db.Integer,primary_key = True)
+    title = db.Column(db.String(255),nullable=False)
+    content = db.Column(db.Text(),nullable=False)
+    author = db.Column(db.String(255))
+    date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer,db.ForeignKey("users.id"))
+    comment = db.relationship('Comment', backref='post', lazy='dynamic')
+
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.remove(self)
+        db.session.commit()
+
+    def get_post(id):
+        post =Post.query.filter_nby(id=id).first()
+
+        return post
+
+    def __repr__(self):
+        return f'Post {self.content}'
+
 class Comment(db.Model):
     __tablename__='comments'
 
     id = db.Column(db.Integer,primary_key = True)
     comment = db.Column(db.String)
     posted = db.Column(db.DateTime,default=datetime.utcnow)
-
+    post_id = db.Column(db.Integer,db.ForeignKey("posts.id"))
+    user_id = db.Column(db.Integer,db.ForeignKey("users.id"))
 
     def save(self):
         db.session.add(self)
@@ -79,23 +113,19 @@ class Comment(db.Model):
         return f'Comment {self.comment}'
 
 
+    
+class Subscriber(db.Model):
+    __tablename__='subscribers'
 
-class Posts(db.Model):
-    __tablename__='posts'
-    id = db.Column(db.Integer,primary_key = True)
-    title = db.Column(db.String(255))
-    content = db.Column(db.Text)
-    author = db.Column(db.String(255))
-    date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+    id = db.Column(db.Integer,primary_key=True)
+    email = db.Column(db.String(255),unique=True, index=True)
 
-    def save(self):
+    def save_subscriber(self):
         db.session.add(self)
         db.session.commit()
 
-    def delete(self):
-        db.session.remove(self)
-        db.session.commit()
-    
+    def __repr__(self):
+        return f'Subscriber {self.email}'
 
     
 class Quotes:
