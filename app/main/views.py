@@ -1,9 +1,7 @@
-from crypt import methods
 from curses import flash
-from turtle import title
 from flask import render_template,request,redirect,url_for,abort
 from flask_login import login_required,current_user
-
+from requests import get_quotes
 from app.main.forms import PostForm
 from .. import db,photos
 from . import main
@@ -14,10 +12,9 @@ from .. models import Posts, User
 
 
 @main.route('/')
-@login_required
 def index():
-  title = 'title is here'
-  return render_template("index.html")
+    quotes = get_quotes()
+    return render_template("index.html",quote = quotes)
 
 @main.route('/add-post', methods=['GET','POST'])
 def add_post():
