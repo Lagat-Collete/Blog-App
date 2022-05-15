@@ -1,5 +1,7 @@
 from email.policy import default
 from turtle import title
+
+from requests import post
 from . import db
 from datetime import datetime
 from werkzeug.security import generate_password_hash,check_password_hash
@@ -78,7 +80,7 @@ class Comment(db.Model):
 
 
 
-class Posts(db.model):
+class Posts(db.Model):
     __tablename__='posts'
     id = db.Column(db.Integer,primary_key = True)
     title = db.Column(db.String(255))
@@ -86,5 +88,19 @@ class Posts(db.model):
     author = db.Column(db.String(255))
     date_posted = db.Column(db.DateTime, default=datetime.utcnow)
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.remove(self)
+        db.session.commit()
+    
+
+    
+class Quotes:
+    def __init__(self,author,quote):
+        self.author = author
+        self.quote = quote 
     
 
