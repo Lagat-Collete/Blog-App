@@ -27,7 +27,7 @@ class UpdateProfile(FlaskForm):
 
 
 
-class PostForm(FlaskForm):
+class createPost(FlaskForm):
   title = StringField("Title", validators=[DataRequired()])
   content = StringField("Content",validators=[DataRequired()],widget=TextArea())
   author = StringField("Author",validators=[DataRequired()])
