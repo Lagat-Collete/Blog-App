@@ -3,10 +3,11 @@ from email.message import EmailMessage
 from flask import render_template,request,redirect,url_for,abort
 from flask_login import login_required,current_user
 from requests import get_quotes
-from app.main.forms import PostForm
+from app.email import mail_message
+from app.main.forms import PostForm, createPost
 from .. import db,photos
 from . import main
-from .. models import Post, Subscriber, User
+from .. models import Comment, Post, Subscriber, User
 
 
 
@@ -40,58 +41,57 @@ def post(post_id):
     post = Post.query.get(post_id)
     return render_template('post.html', post = post)
 
-@main.route('/blog/update/<blog_id>', methods = ['GET','POST'])
+@main.route('/post/update/<post_id>', methods = ['GET','POST'])
 @login_required
-def update_blog(blog_id):
-    blog = Blog.query.get(blog_id)
-    if blog.user != current_user:
+def update_post(post_id):
+    post = Post.query.get(post_id)
+    if post.user != current_user:
         abort(403)
-    form = CreateBlog()
+    form = createPost()
     if form.validate_on_submit():
-        blog.title = form.title.data
-        blog.content = form.content.data
+        post.title = form.title.data
+        post.content = form.content.data
         db.session.commit()
-        flash("You have updated your Blog!")
-        return redirect(url_for('main.blog',id = blog.id)) 
+        flash("You have updated your post!")
+        return redirect(url_for('main.post',id = post.id)) 
     if request.method == 'GET':
-        form.title.data = blog.title
-        form.content.data = blog.content
-    return render_template('newblog.html', form = form)
+        form.title.data = post.title
+        form.content.data = post.content
+    return render_template('newpost.html', form = form)
 
-@main.route('/comment/<blog_id>', methods = ['Post','GET'])
+@main.route('/comment/<post_id>', methods = ['Post','GET'])
 @login_required
-def comment(blog_id):
-    blog = Blog.query.get(blog_id)
+def comment(post_id):
+    post = Post.query.get(post_id)
     if request.method == 'POST':
         comment =request.form.get('newcomment')
-        new_comment = Comment(comment = comment, user_id = current_user._get_current_object().id, blog_id=blog_id)
+        new_comment = Comment(comment = comment, user_id = current_user._get_current_object().id, post_id=post_id)
         new_comment.save()
-    return redirect(url_for('main.blog',blog_id = blog.id))    
+    return redirect(url_for('main.post',post_id= post.id))    
 
 @main.route('/subscribe',methods = ['POST','GET'])
 def subscribe():
     email = request.form.get('subscriber')
     new_subscriber = Subscriber(email = email)
     new_subscriber.save_subscriber()
-    mail_message("Subscribed to D-Blog","email/welcome_subscriber",new_subscriber.email,new_subscriber=new_subscriber)
+    mail_message("Subscribed to Blog-Site","email/welcome_subscriber",new_subscriber.email,new_subscriber=new_subscriber)
     flash('Sucessfuly subscribed')
     return redirect(url_for('main.index'))
 
 @main.route('/user/<string:username>')
 def user_posts(username):
     user = User.query.filter_by(username=username).first()
-    page = request.args.get('page',1, type = int )
-    blogs = Blog.query.filter_by(user=user).order_by(Blog.posted.desc()).paginate(page = page, per_page = 4)
-    return render_template('userposts.html',blogs=blogs,user = user)
+    posts = Post.query.filter_by(user=user).order_by(Post.posted.desc())
+    return render_template('userposts.html',posts=posts,user = user)
 
-@main.route('/blog/<blog_id>/delete', methods = ['POST'])
+@main.route('/post/<post_id>/delete', methods = ['POST'])
 @login_required
-def delete_post(blog_id):
-    blog = Blog.query.get(blog_id)
-    if blog.user != current_user:
+def delete_post(post_id):
+    post = Post.query.get(post_id)
+    if post.user != current_user:
         abort(403)
-    blog.delete()
-    flash("Blog deleted succesfully!")
+    post.delete()
+    flash("Post deleted succesfully!")
     return redirect(url_for('main.index'))
       
 
