@@ -1,12 +1,13 @@
-from curses import flash
+
 from email.message import EmailMessage
-from flask import render_template,request,redirect,url_for,abort
+from flask import render_template,request,redirect,url_for,abort,flash
 from flask_login import login_required,current_user
-from requests import get_quotes
+from app.requests import get_quotes
 from app.email import mail_message
 from app.main.forms import PostForm, UpdateProfile, createPost
 from .. import db,photos
-from . import main
+from app.main import main
+import os
 from .. models import Comment, Post, Subscriber, User
 
 

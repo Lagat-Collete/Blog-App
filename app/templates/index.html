@@ -1,11 +1,57 @@
-{% extends 'base.html'%}
-
+{% extends 'base.html'%} {% block content %}
 
 {% block styles%}
     {{ super() }}
     <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
 {% endblock %}
 
-{% block content %}             
-        <h2>{{title}}</h2>
-{% endblock%}
+
+<div class="container landing">
+  <div class="row ">
+    {% if current_user.is_authenticated %}
+    <div class="col-md-3 "><a href="{{url_for('main.new_blog')}}">Post</a></div>
+    {% endif %}
+    <div class="col-md-9 ">
+      <h1 style="font-weight: bold;color: #060707 ">Welcome to Blog-App</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8 ">
+      {% for post in post.items %}
+        <br>
+          <div>
+            <img src="{{ url_for('static', filename='photos/' + post.user.profile_pic_path) }}">
+            <p><a href="{{url_for('main.update_post',post_id = post.user.id)}}"><span  style="color: rgb(3, 3, 3)"><strong>{{post.user.username | title}}</strong></span> </a> </p>
+          </div>
+          <div>
+            <p>Posted on : {{post.posted.strftime('%d-%m-%Y')}}</p>
+            <h4><a href="{{url_for('main.update_post',post_id = post.id)}}">{{post.title | upper}}</a></h4>
+            <p>{{post.content}}</p>
+            <p> <a href="{{url_for('main.comment',post_id = post.id)}}"> Comment</a> {{post.comment.count()}} Comments</p>
+
+          </div>
+        <br>
+      {% endfor %}
+    </div>
+
+        <div class="container-fluid">{% for message in get_flashed_messages() %}
+          <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">&times;</button> {{ message }}
+          </div>
+          {% endfor %}
+          <form action="{{url_for('main.subscribe')}}" method="POST">
+            <h5>Subscribe for get updates</h5>
+            <div>
+              <label>Email Address</label>
+              <input type="email" class="form-control " name="subscriber" required>
+            </div>
+            <div>
+              <button class="btn btn-sm btn-outline-success">Subscribe</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% endblock %}
