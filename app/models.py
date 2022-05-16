@@ -1,27 +1,13 @@
 from email.policy import default
-from enum import unique
-from operator import index
-from turtle import title
-
 from requests import post
-from . import db
 from datetime import datetime
 from werkzeug.security import generate_password_hash,check_password_hash
-from flask_login import UserMixin
-from . import login_manager
+from flask_login import UserMixin,current_user
+from . import db, login_manager
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
-
-class PhotoProfile(db.Model):
-    __tablename__ = 'profile_photos'
-
-    id = db.Column(db.Integer,primary_key = True)
-    pic_path = db.Column(db.String())
-    user_id = db.Column(db.Integer,db.ForeignKey("users.id"))
-
 
 class User(UserMixin,db.Model):
     __tablename__ = 'users'
@@ -86,7 +72,7 @@ class Post(db.Model):
         return post
 
     def __repr__(self):
-        return f'Post {self.content}'
+        return f'Post {self.title}'
 
 class Comment(db.Model):
     __tablename__='comments'
