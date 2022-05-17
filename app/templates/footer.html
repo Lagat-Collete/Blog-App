@@ -1,9 +1,10 @@
-{% extends 'base.html'%} {% block content %}
+{% extends 'base.html'%}
 
 {% block styles%}
     {{ super() }}
     <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
 {% endblock %}
+{% block content%}
 
 <div class="foot">
   <a href="#home">Home</a>

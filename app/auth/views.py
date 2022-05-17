@@ -16,9 +16,8 @@ def signin():
         if user != None and user.verify_password(form.password.data):
             login_user(user,form.remember.data)
             return redirect(request.args.get('next') or url_for('main.index'))
-        flash('Incorrect Username or Password')
 
-    return render_template('signin.html',form = form)
+    return render_template('auth/login.html',form = form)
 
 @auth.route('/signup', methods =['POST', 'GET'])
 def signup():
@@ -30,10 +29,9 @@ def signup():
            print('inside', user)
            db.session.add(user)
            db.session.commit()
-        mail_message("Hello,Welcome to my Blog site","email/welcome_user",user.email,user=user)
-        return  redirect(url_for('auth.signin'))
-    print('outside validation', form)
-    return render_template('signup.html', form=form )
+           mail_message("Hello,Welcome to my Blog site","email/welcome_user",user.email,user=user)
+           return  redirect(url_for('auth.signin'))
+    return render_template('auth/register.html', form=form )
   
 @auth.route('/signout')
 @login_required

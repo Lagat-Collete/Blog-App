@@ -15,13 +15,15 @@ from .. models import Comment, Post, Subscriber, User
 
 
 @main.route('/')
+@login_required
 def index():
     quotes = get_quotes()
-    return render_template("index.html",quote = quotes)
-
+    posts = Post.query.all()
+    return render_template("index.html", quotes = quotes, posts = posts)
+    
 
 @main.route('/profile',methods = ['POST','GET'])
-# @login_required
+@login_required
 def profile():
     form = UpdateProfile()
     profile_pic_path = ''
@@ -56,7 +58,8 @@ def updateprofile(name):
 
 
 
-@main.route('/new_post', methods=['GET','POST'])
+@main.route('/new-post', methods=['GET','POST'])
+@login_required
 def new_post():
   form =createPost()
 
@@ -68,10 +71,7 @@ def new_post():
       return redirect(url_for('main.index'))
   flash('You Posted a new Post')
   return render_template('newpost.html', form = form)
-    # #clear the form
-    # form.title.data = ''
-    # form.content.data = ''
-    # form.author.data = ''
+    
 
 @main.route('/post/<post_id>', methods = ['GET'])
 @login_required

@@ -14,9 +14,22 @@
       <h1 style="font-weight: bold;color: #060707 ">Welcome to Blog-App</h1>
     </div>
   </div>
+    <div class="row">
+      <div class="col-md-6">
+        <a href="/new-post"><button class="btn btn-primary">Add-Post</button></a>
+      </div>
+    </div>
+
   <div class="row">
+    <div class="col-md-8">
+      <p>{{ quotes.quote }}</p>
+      <h3>{{quotes.author}}</h3>
+    </div>
+  </div>
+  <div class="row">
+   
     <div class="col-md-8 ">
-      {% for post in posts.items %}
+      {% for post in posts %}
         <br>
           <div>
             <img src="{{ url_for('static', filename='photos/' + post.user.profile_pic_path) }}">
