@@ -4,7 +4,7 @@ from flask import render_template,request,redirect,url_for,abort,flash
 from flask_login import login_required,current_user
 from app.requests import get_quotes
 from app.email import mail_message
-from app.main.forms import PostForm, UpdateProfile, createPost
+from app.main.forms import  UpdateProfile, createPost
 from .. import db,photos
 from app.main import main
 import os
@@ -58,7 +58,7 @@ def updateprofile(name):
 
 @main.route('/new_post', methods=['GET','POST'])
 def new_post():
-  form = PostForm()
+  form =createPost()
 
   if form.validate_on_submit():
       post = Post(title=form.title.data, content=form.content.data, author=form.author.data)

@@ -1,0 +1,15 @@
+.foot {
+  padding: 20px;
+  text-align: center;
+  word-spacing: 10px;
+  letter-spacing: 3px;
+  height: 70px;
+  background-color: #2d2d2d;
+}
+.footer {
+  text-align: center;
+  font-style: italic;
+  color: #807b79;
+  height: 50px;
+  background-color: #222222;
+}

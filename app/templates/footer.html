@@ -1,0 +1,18 @@
+{% extends 'base.html'%} {% block content %}
+
+{% block styles%}
+    {{ super() }}
+    <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+{% endblock %}
+
+<div class="foot">
+  <a href="#home">Home</a>
+  <a href="#signin">Signin</a>
+  <a href="#signup">Sign-Up</a>
+  <a href="#login">Login</a>
+  <a href="# logout">Logout</a>
+</div>
+<div class="footer">
+  <p>2022 (c)All rights reserved.</p>
+</div>
+{% endblock %}
