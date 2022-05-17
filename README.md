@@ -52,7 +52,6 @@
 - HTML
 ## Support and contact details
 #### For contributions,ideas,clarification,concerns to the code,feel free to call me or email me with respective contacts details:
-* 0705136063
 * jepngetich.lagat@student.moringascholl.com
 ### LICENSE
  * [MIT-LICENSE](LICENSE)
