@@ -17,7 +17,7 @@ def index():
     quotes = get_quotes()
     page = request.args.get('page',1, type = int )
     posts = Post.query.all()
-    return render_template('index.html', quote = quotes,posts=posts)
+    return render_template('index.html', quote = quotes,posts=posts, page=page)
 
 @main.route('/profile',methods = ['POST','GET'])
 @login_required
