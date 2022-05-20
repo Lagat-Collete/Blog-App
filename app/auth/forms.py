@@ -29,9 +29,5 @@ class SignupForm(FlaskForm):
       if User.query.filter_by(username = data_field.data).first():
             raise ValidationError("The username has already been taken")
 
-class SubscribeForm(FlaskForm):
-    first_name = StringField('Enter your First_name',validators = [InputRequired()])
-    last_name = StringField('Enter your Last_name',validators = [InputRequired()])
-    email = StringField('Your Email Address',validators=[InputRequired(),Email()])
-    submit = SubmitField('Submit')
+
      

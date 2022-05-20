@@ -1,26 +1,23 @@
 
-from email.message import EmailMessage
-from flask import render_template,request,redirect,url_for,abort,flash
-from flask_login import login_required,current_user
-from app.requests import get_quotes
-from app.email import mail_message
-from app.main.forms import  UpdateProfile, createPost
-from .. import db,photos
+from flask import render_template,redirect,url_for,abort,request,flash
 from app.main import main
+from .. import db
+from app.models import User,Post,Comment,Subscriber
+from app.requests import get_quotes
+import secrets
 import os
-from .. models import Comment, Post, Subscriber, User
-
-
+from flask_login import login_required,current_user
+from .forms import UpdateProfile,CreatePost
+from ..email import mail_message
 
 
 
 @main.route('/')
-@login_required
 def index():
     quotes = get_quotes()
+    page = request.args.get('page',1, type = int )
     posts = Post.query.all()
-    return render_template("index.html", quotes = quotes, posts = posts)
-    
+    return render_template('index.html', quote = quotes,posts=posts)
 
 @main.route('/profile',methods = ['POST','GET'])
 @login_required
@@ -61,13 +58,17 @@ def updateprofile(name):
 @main.route('/new-post', methods=['GET','POST'])
 @login_required
 def new_post():
-  form =createPost()
-
+  subscribers = Subscriber.query.all()
+  form = CreatePost()
   if form.validate_on_submit():
-      post = Post(title=form.title.data, content=form.content.data, author=form.author.data)
+      title = form.title.data
+      content = form.content.data
+      author =form.author.data
+      user_id = current_user._get_current_object().id
+      post = Post(title=title, content=content, author=author, user_id =user_id)
       post.save()
-      for subscriber in Subscriber:
-            EmailMessage("New  Post","email/new_post",subscriber.email,post=post)
+      for subscriber in subscribers:
+            mail_message("New  Post","email/new_post",subscriber.email,post=post)
       return redirect(url_for('main.index'))
   flash('You Posted a new Post')
   return render_template('newpost.html', form = form)
@@ -85,12 +86,12 @@ def update_post(post_id):
     post = Post.query.get(post_id)
     if post.user != current_user:
         abort(403)
-    form = createPost()
+    form = CreatePost()
     if form.validate_on_submit():
         post.title = form.title.data
         post.content = form.content.data
         db.session.commit()
-        flash("You have updated your post!")
+        flash("You have updated your Post!")
         return redirect(url_for('main.post',id = post.id)) 
     if request.method == 'GET':
         form.title.data = post.title
@@ -111,7 +112,6 @@ def comment(post_id):
 def subscribe():
     email = request.form.get('subscriber')
     new_subscriber = Subscriber(email = email)
-    new_subscriber.save_subscriber()
     mail_message("Subscribed to Blog-Site","email/welcome_subscriber",new_subscriber.email,new_subscriber=new_subscriber)
     flash('Sucessfuly subscribed')
     return redirect(url_for('main.index'))
@@ -119,7 +119,8 @@ def subscribe():
 @main.route('/user/<string:username>')
 def user_posts(username):
     user = User.query.filter_by(username=username).first()
-    posts = Post.query.filter_by(user=user).order_by(Post.posted.desc())
+    page = request.args.get('page',1, type = int )
+    posts = Post.query.filter_by(user=user).order_by(Post.posted.desc()).paginate(page = page, per_page = 4)
     return render_template('userposts.html',posts=posts,user = user)
 
 @main.route('/post/<post_id>/delete', methods = ['POST'])

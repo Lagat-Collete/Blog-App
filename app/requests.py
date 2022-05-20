@@ -1,12 +1,12 @@
 from urllib import response
-import requests
+import requests,json
 from .models import Quotes
 
 
-api ='http://quotes.stormconsultancy.co.uk/random.json'
+BASE_URL ='http://quotes.stormconsultancy.co.uk/random.json'
 
 def get_quotes():
-    response = requests.get(f'{api}')
-    quote = response.json()
-    quotes = Quotes(quote.get('author'), quote.get('quote'))
-    return quotes
+    response = requests.get(f"{BASE_URL}")
+    if response.status_code ==200:
+      quote = response.json()
+      return quote

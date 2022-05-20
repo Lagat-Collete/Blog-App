@@ -42,7 +42,7 @@ class User(UserMixin,db.Model):
         db.session.commit()
 
     def __repr__(self):
-        return f'User {self.username}'
+        return "User: %s" %str(self.username)
 
 
 class Post(db.Model):
@@ -66,7 +66,7 @@ class Post(db.Model):
         db.session.commit()
 
     def get_post(id):
-        post =Post.query.filter_nby(id=id).first()
+        post =Post.query.filter_by(id=id).first()
 
         return post
 
@@ -114,8 +114,8 @@ class Subscriber(db.Model):
 
     
 class Quotes:
-    def __init__(self,author,quote):
-        self.author = author
-        self.quote = quote 
-    
-
+    def __init__(self,author,id,quote,permalink):
+      self.author = author
+      self.id =id
+      self.quote = quote
+      self.permalink = permalink

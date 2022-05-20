@@ -1,64 +1,68 @@
-{% extends 'base.html'%}
-
-  {% block styles%}
-      {{ super() }}
-      <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
-      {% endblock %}
-      {% block content %}
+{% extends 'base.html'%} {% block content %}
 <div class="container landing">
   <div class="row ">
     {% if current_user.is_authenticated %}
-    <div class="col-md-3 "><a href="{{url_for('main.new_blog')}}">Post</a></div>
+    <div class="col-md-3 "><a class="btn btn-sm btn-info "  href="{{url_for('main.new_post')}}">Post</a></div>
     {% endif %}
     <div class="col-md-9 ">
-      <h1 style="font-weight: bold;color: #060707 ">Welcome to Blog-App</h1>
-    </div>
-  </div>
-    <div class="row">
-      <div class="col-md-6">
-        <a href="/new-post"><button class="btn btn-primary">Add-Post</button></a>
-      </div>
-    </div>
-
-  <div class="row">
-    <div class="col-md-8">
-      <p>{{ quotes.quote }}</p>
-      <h3>{{quotes.author}}</h3>
+      <h1 style="font-family: 'Lobster', cursive;font-weight: bold;color: #102e41 ">Welcome to Blog-App</h1>
     </div>
   </div>
   <div class="row">
-   
     <div class="col-md-8 ">
-      {% for post in posts %}
-        <br>
-          <div>
-            <img src="{{ url_for('static', filename='photos/' + post.user.profile_pic_path) }}">
-            <p><a href="{{url_for('main.update_post',post_id = post.user.id)}}"><span  style="color: rgb(3, 3, 3)"><strong>{{post.user.username | title}}</strong></span> </a> </p>
+      {% for post in posts.items %}
+      <div class="container bg mb-2">
+        <hr>
+        <div class="row ">
+          <div class="col-md-2 ">
+            <img class="rounded-circle post-img mr-10" src="{{ url_for('static', filename='photos/' + post.user.profile_pic_path) }}">
+            <p id="usern"><a href="{{url_for('main.update_post',post_id = post.user.id)}}"><span  style="color: rgb(2, 2, 26)"><strong>{{post.user.username | title}}</strong></span> </a> </p>
           </div>
-          <div>
+          <div class="col-md-10 pr-4 d-justify userblog">
             <p>Posted on : {{post.posted.strftime('%d-%m-%Y')}}</p>
-            <h4><a href="{{url_for('main.update_post',post_id = post.id)}}">{{post.title | upper}}</a></h4>
+            <h4><a href="{{url_for('main.update_post',blog_id = post.id)}}">{{post.title | upper}}</a></h4>
             <p>{{post.content}}</p>
-            <p> <a href="{{url_for('main.comment',post_id = post.id)}}"> Comment</a> {{post.comment.count()}} Comments</p>
+            <p> <a class="btn btn-sm btn-info" href="{{url_for('main.comment',post_id = post.id)}}"> Comment</a> {{post.comment.count()}} Comments</p>
 
           </div>
-        <br>
-      {% endfor %}
-    </div>
+        </div>
+        <hr>
+      </div>
+     {% endfor%}
+     
+      <a href="{{url_for('main.index',page = page_num)}}" class="btn btn-sm btn-info mb-2">{{ page_num }}</a>
+      <a href="{{url_for('main.index',page = page_num)}}" class="btn btn-sm btn-outline-info mb-2">{{ page_num }}</a>
 
+    </div>
+    <div class="col-md-4">
+      <div class="container">
+        <h3 style="font-family: 'Abril Fatface', cursive;">Quotes</h3>
+        <div class="card quote p-1 shadow-lg" style="background-color: #02090e94;">
+          <div class="card-title p-3 ">
+            <h4 style="font-size:medium;">A quote by:
+              <span><em>{{quote.author}}</em></span>
+            </h4>
+            <p class="card-text " style="font-family:'Times New Roman', Times, serif;
+            font-size:large;
+            ">"{{quote.quote}}"</p>
+          </div>
+        </div>
         <div class="container-fluid">{% for message in get_flashed_messages() %}
           <div class="alert alert-success">
             <button type="button" class="close" data-dismiss="alert">&times;</button> {{ message }}
           </div>
           {% endfor %}
-          <form action="{{url_for('main.subscribe')}}" method="POST">
-            <h5>Subscribe for get updates</h5>
-            <div>
-              <label>Email Address</label>
+          <form class="form-inline ml-2" action="{{url_for('main.subscribe')}}" method="POST">
+            <h5 style="font-family:'Times New Roman', Times, serif;
+            ;color: #0b4970;font-size:large;font-style: italic;padding-top:17px;"> Don't miss out on special updates, Subscribe for updates !</h5>
+            <div class="md-form form-group">
+              <label class="white-color">Email Address</label>
               <input type="email" class="form-control " name="subscriber" required>
             </div>
-            <div>
-              <button class="btn btn-sm btn-outline-success">Subscribe</button>
+            <div class="md-form form-group">
+              <button class="btn btn-sm btn-outline-success" id="subs">Subscribe</button>
+              <h6>
+              </h6>
             </div>
           </form>
         </div>

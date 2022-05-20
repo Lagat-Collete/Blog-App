@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField,FileAllowed
 from wtforms import StringField, TextAreaField, SubmitField,ValidationError
-from wtforms.validators import DataRequired,InputRequired,Email
+from wtforms.validators import InputRequired,Email
 from flask_login import current_user
 from wtforms.widgets import TextArea
 from ..models import User
@@ -27,8 +27,8 @@ class UpdateProfile(FlaskForm):
 
 
 
-class createPost(FlaskForm):
-  title = StringField("Title", validators=[DataRequired()])
-  content = StringField("Content",validators=[DataRequired()],widget=TextArea())
-  author = StringField("Author",validators=[DataRequired()])
+class CreatePost(FlaskForm):
+  title = StringField("Title", validators=[InputRequired()])
+  content = StringField("Content",validators=[InputRequired()],widget=TextArea())
+  author = StringField("Author",validators=[InputRequired()])
   submit = StringField('Post')

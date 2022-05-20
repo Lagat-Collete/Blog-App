@@ -1,26 +1,29 @@
 {% extends 'base.html'%} {% block content %}
 <div class="container">
-  <h1 class="text-center mb-2" style="font-weight: 600;">{{user.post.count()}} Posts by :{{ user.username }} </h1>
+  <h1 class="text-center mb-2" style="font-weight: 300;">{{user.post.count()}} Posts by {{ user.username }} </h1>
   <div class="row">
-    <div class="col-md-2"></div>
+    <div class="col-md-2">
+
+    </div>
     <div class="col-md-8">
       {% for post in posts.items %}
-      <div>
-        <br>
-        <div>
-          <div>
-            <img src="{{ url_for('static', filename='photos/' + post.user.profile_pic_path) }}">
+      <div class="bg mb-2">
+        <hr>
+        <div class="row">
+          <div class="col-md-2">
+            <img class="rounded-circle post-img mr-10" src="{{ url_for('static', filename='photos/' + post.user.profile_pic_path) }}">
           </div>
-          <div>
-            <p>By <span style="color:rgb(247, 34, 34)">{{post.user.username}}</span> on {{post.posted.strftime('%d-%m-%Y')}}</p>
-            <h3 style="font-weight: 600;">Tittle: <a href="{{url_for('main.post',id = post.id)}}">{{post.title}}</a></h3>
+          <div class="col-md-6">
+            <p>By <span style="color:rgb(10, 13, 48)">{{post.user.username}}</span> on {{post.posted.strftime('%d-%m-%Y')}}</p>
+            <h3 style="font-family:'Times New Roman', Times, serif;
+            ">Tittle: <a href="{{url_for('main.post',id = post.id)}}">{{post.title}}</a></h3>
             <p>{{post.content}}</p>
             <p>{{post.comment.count()}} Comments</p>
           </div>
-          <div>
-            <form  action="{{url_for('main.comment',post_id = post.id)}}" method="POST">
-              <div>
-                <label for="newcomment">Type your comment</label>
+          <div class="col-md-4">
+            <form class="form-inline" action="{{url_for('main.comment',post_id = post.id)}}" method="POST">
+              <div class="md-form form-group">
+                <label for="form92">Comment Here</label>
                 <input type="text" class="form-control" name="newcomment" required>
               </div>
               <div class="md-form form-group">
@@ -31,7 +34,10 @@
         </div>
         <hr>
       </div>
-      {% endfor %}
+      {% endfor %} {% for page_num in posts.iter_pages(left_edge = 1, right_edge = 1, left_current=1, right_current = 2) %} {% if page_num %} {% if posts.page == page_num %}
+      <a href="{{url_for('main.user_posts',username = user.username,page = page_num)}}" class="btn btn-sm btn-success mb-2">{{ page_num }}</a> {% else%}
+      <a href="{{url_for('main.user_posts',username = user.username,page = page_num)}}" class="btn btn-sm btn-outline-success mb-2">{{ page_num }}</a> {% endif %} {% else%} ... {% endif %} {% endfor %}
+
     </div>
     <div class="col-md-2"></div>
   </div>

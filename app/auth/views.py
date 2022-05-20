@@ -17,7 +17,7 @@ def signin():
             login_user(user,form.remember.data)
             return redirect(request.args.get('next') or url_for('main.index'))
 
-    return render_template('auth/login.html',form = form)
+    return render_template('auth/signin.html',form = form)
 
 @auth.route('/signup', methods =['POST', 'GET'])
 def signup():
@@ -29,9 +29,10 @@ def signup():
            print('inside', user)
            db.session.add(user)
            db.session.commit()
-           mail_message("Hello,Welcome to my Blog site","email/welcome_user",user.email,user=user)
-           return  redirect(url_for('auth.signin'))
-    return render_template('auth/register.html', form=form )
+        mail_message("Hello,Welcome to my Blog site","email/welcome_user",user.email,user=user)
+        return  redirect(url_for('auth.signin'))
+    print('outside validation', form)
+    return render_template('auth/signup.html', form=form )
   
 @auth.route('/signout')
 @login_required
@@ -39,7 +40,3 @@ def signout():
     logout_user()
     return redirect(url_for("main.index"))
     
-@auth.route('/subscribe',methods=['GET','POST'])
-def subscribe():
-    title = 'subscribe to My Blog site'
-    return render_template('subscribe.html',title=title)
