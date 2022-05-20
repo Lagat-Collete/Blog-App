@@ -17,7 +17,7 @@ def signin():
             login_user(user,form.remember.data)
             return redirect(request.args.get('next') or url_for('main.index'))
 
-    return render_template('auth/signin.html',form = form)
+    return render_template('auth/login.html',form = form)
 
 @auth.route('/signup', methods =['POST', 'GET'])
 def signup():
