@@ -32,7 +32,7 @@ def signup():
         mail_message("Hello,Welcome to my Blog site","email/welcome_user",user.email,user=user)
         return  redirect(url_for('auth.signin'))
     print('outside validation', form)
-    return render_template('auth/signup.html', form=form )
+    return render_template('auth/register.html', form=form )
   
 @auth.route('/signout')
 @login_required

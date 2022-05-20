@@ -4,7 +4,6 @@ from app.main import main
 from .. import db
 from app.models import User,Post,Comment,Subscriber
 from app.requests import get_quotes
-import secrets
 import os
 from flask_login import login_required,current_user
 from .forms import UpdateProfile,CreatePost
